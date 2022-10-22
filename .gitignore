@@ -104,6 +104,7 @@ celerybeat.pid
 # Environments
 .env
 .venv
+.silicabot
 env/
 venv/
 ENV/
