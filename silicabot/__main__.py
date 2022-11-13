@@ -6,10 +6,15 @@ from aiohttp import web
 from gidgethub import routing, sansio
 from gidgethub import aiohttp as gh_aiohttp
 
+# import components
+# import claim
+from . import add
+
 routes = web.RouteTableDef()
 
 router = routing.Router()
 
+# functions
 @router.register("issues", action="opened")
 async def issue_opened_event(event, gh, *args, **kwargs):
     """
@@ -20,18 +25,6 @@ async def issue_opened_event(event, gh, *args, **kwargs):
 
     message = f"Thanks for the report @{author}! I will look into it ASAP! (I'm a bot)."
     await gh.post(url, data={"body": message})
-
-# @router.register("issue_comment", action="created") #changes=""
-# async def issue_claim_event(event, gh, *args, **kwargs):
-#     """
-#     Assign issues to users when called upon
-#     """
-#     url = event.data["issue"]
-#     author = event.data["issue"]["user"]["login"]
-
-#     label = "in progress"
-
-
 
 # Main coroutine
 @routes.post("/")
@@ -48,12 +41,12 @@ async def main(request):
 
     # GitHub API session start
     async with aiohttp.ClientSession() as session:
-        gh = gh_aiohttp.GitHubAPI(session, "Barissa-Imran",
+        gh = gh_aiohttp.GitHubAPI(session, "savannahbot",
                                     oauth_token=oauth_token)
 
         # callback for the event
         await router.dispatch(event, gh)
-    
+
     # return a "Success"
     return web.Response(status=200)
 
